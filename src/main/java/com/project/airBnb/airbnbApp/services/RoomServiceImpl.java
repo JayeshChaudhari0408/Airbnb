@@ -6,6 +6,7 @@ import com.project.airBnb.airbnbApp.entity.Room;
 import com.project.airBnb.airbnbApp.exceptions.ResourceNotFoundException;
 import com.project.airBnb.airbnbApp.repositories.HotelRepository;
 import com.project.airBnb.airbnbApp.repositories.RoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,7 +22,10 @@ public class RoomServiceImpl implements RoomService{
     private final HotelRepository hotelRepository;
     private final ModelMapper modelMapper;
 
+    private final InventoryService inventoryService;
+
     @Override
+    @Transactional
     public RoomDto createNewRoom(Long hotelId,RoomDto roomDto) {
         Room room = modelMapper.map(roomDto,Room.class);
         Hotel hotel = hotelRepository
@@ -30,7 +34,9 @@ public class RoomServiceImpl implements RoomService{
         room.setHotel(hotel);
         room = roomRepository.save(room);
 
-        // TODO:create inventory as soon as room is created and if hotel is active
+        if(hotel.getActive()) {
+            inventoryService.initializeRoomForAYear(room);
+        }
         return modelMapper.map(room,RoomDto.class);
     }
 
@@ -55,9 +61,14 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
+    @Transactional
     public void deleteRoomById(Long roomId) {
-        boolean exist = roomRepository.existsById(roomId);
-        if(!exist) throw new ResourceNotFoundException("Hotel not found with id "+roomId);
+        Room room = roomRepository
+                .findById(roomId)
+                .orElseThrow(() ->  new ResourceNotFoundException("Room with this id is not available"));
+
+        inventoryService.deleteFutureInventory(room);
+
         roomRepository.deleteById(roomId);
     }
 }

@@ -1,8 +1,7 @@
 package com.project.airBnb.airbnbApp.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -20,6 +19,9 @@ import java.time.LocalDateTime;
                 columnNames = {"hotel_id","room_id","date"}
         )
 )
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Inventory {
 
     @Id
@@ -41,7 +43,7 @@ public class Inventory {
     private Integer bookedCount;
 
     @Column(nullable = false)
-    private Integer totoalCount;
+    private Integer totalCount;
 
     @Column(nullable = false,precision = 5,scale = 2)
     private BigDecimal surgeFactor;
