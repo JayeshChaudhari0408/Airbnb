@@ -1,10 +1,9 @@
 package com.project.airBnb.airbnbApp.services;
-
-import com.project.airBnb.airbnbApp.dto.HotelDto;
+import com.project.airBnb.airbnbApp.dto.HotelPriceDto;
 import com.project.airBnb.airbnbApp.dto.HotelSearchRequest;
-import com.project.airBnb.airbnbApp.entity.Hotel;
 import com.project.airBnb.airbnbApp.entity.Inventory;
 import com.project.airBnb.airbnbApp.entity.Room;
+import com.project.airBnb.airbnbApp.repositories.HotelMinPriceRepository;
 import com.project.airBnb.airbnbApp.repositories.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +25,7 @@ import java.time.temporal.ChronoUnit;
 public class InventoryServiceImpl implements InventoryService{
 
     private final InventoryRepository inventoryRepository;
+    private final HotelMinPriceRepository hotelMinPriceRepository;
     private final ModelMapper modelMapper;
 
 
@@ -57,16 +57,16 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public Page<HotelDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
+    public Page<HotelPriceDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
         Pageable pageable = PageRequest.of(hotelSearchRequest.getPage(),hotelSearchRequest.getSize());
 
         long dateCount =
                 ChronoUnit.DAYS.between(hotelSearchRequest.getStartDate(),hotelSearchRequest.getEndDate())+1;
 
-        Page<Hotel> hotelPage = inventoryRepository.findHotelsWithAvailableInventory(hotelSearchRequest.getCity(),
+        Page<HotelPriceDto> hotelPage = hotelMinPriceRepository.findHotelsWithAvailableInventory(hotelSearchRequest.getCity(),
                 hotelSearchRequest.getStartDate(),hotelSearchRequest.getEndDate(),hotelSearchRequest.getRoomsCount(),
                 dateCount,pageable);
 
-        return hotelPage.map((element) -> modelMapper.map(element,HotelDto.class));
+        return hotelPage;
     }
 }
