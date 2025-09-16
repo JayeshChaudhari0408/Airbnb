@@ -2,12 +2,10 @@ package com.project.airBnb.airbnbApp.controller;
 
 
 import com.project.airBnb.airbnbApp.dto.RoomDto;
-import com.project.airBnb.airbnbApp.entity.Room;
 import com.project.airBnb.airbnbApp.services.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +18,6 @@ import java.util.List;
 public class RoomAdminController {
 
     private final RoomService roomService;
-
 
     @PostMapping
     public ResponseEntity<RoomDto> createNewRoom(@PathVariable Long hotelId ,@RequestBody RoomDto roomDto) {
