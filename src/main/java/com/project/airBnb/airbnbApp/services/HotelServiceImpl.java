@@ -18,6 +18,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.project.airBnb.airbnbApp.utils.AppUtils.getCurrentUser;
 
 @Service
 @Slf4j
@@ -44,7 +47,7 @@ public class HotelServiceImpl implements HotelService{
 
     @Override
     public HotelDto getHotelById(Long id) {
-        log.info("Getting a hotel by ID", id);
+        log.info("Getting a hotel by ID"+ id);
         Hotel hotel=hotelRepository
                 .findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Hotel not found with id "+id));
@@ -122,6 +125,17 @@ public class HotelServiceImpl implements HotelService{
                 .toList();
 
         return new HotelInfoDto(modelMapper.map(hotel,HotelDto.class),rooms);
+    }
+
+    @Override
+    public List<HotelDto> getAllHotel() {
+        User user = getCurrentUser();
+        List<Hotel> hotels = hotelRepository.findByOwner(user);
+
+        return hotels
+                .stream()
+                .map((element) -> modelMapper.map(element,HotelDto.class))
+                .collect(Collectors.toList());
     }
 
 
