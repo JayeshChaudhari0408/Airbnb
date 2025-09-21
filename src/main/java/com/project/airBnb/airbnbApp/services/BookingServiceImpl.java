@@ -57,6 +57,9 @@ public class BookingServiceImpl implements BookingService{
     @Transactional
     public BookingDto initializeBooking(BookingRequestDto bookingRequestDto) {
 
+        log.info("Initialising booking for hotel : {}, room: {}, date {}-{}", bookingRequestDto.getHotelId(),
+                bookingRequestDto.getRoomId(), bookingRequestDto.getCheckInDate(), bookingRequestDto.getCheckOutDate());
+
         Hotel hotel  = hotelRepository.findById(bookingRequestDto.getHotelId()).orElseThrow(() ->
                 new ResourceNotFoundException("Hotel not found with id: "+bookingRequestDto.getHotelId()));
 
@@ -98,6 +101,8 @@ public class BookingServiceImpl implements BookingService{
     @Transactional
     public BookingDto addGuests(Long bookingId, List<GuestDto> guestDtos) {
 
+        log.info("Adding guests for booking with id: {}", bookingId);
+
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new ResourceNotFoundException("Booking not found with id: "+bookingId));
         User user = getCurrentUser();
@@ -137,8 +142,9 @@ public class BookingServiceImpl implements BookingService{
             throw new IllegalStateException("Booking has already expired");
         }
 
-        String sessionUrl =  checkoutService
-                .getCheckoutSession(booking,frontendUrl+"/payments/success",frontendUrl+"/payments/failure");
+        String sessionUrl = checkoutService.getCheckoutSession(booking,
+                frontendUrl+"/payments/" +bookingId +"/success",
+                frontendUrl+"/payments/" +bookingId +"/failure");
         booking.setBookingStatus(BookingStatus.PAYMENTS_PENDING);
         bookingRepository.save(booking);
 
@@ -214,7 +220,7 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public String getBookingStatus(Long bookingId) {
+    public BookingStatus getBookingStatus(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: "+bookingId));
 
@@ -222,7 +228,7 @@ public class BookingServiceImpl implements BookingService{
         if(!user.getId().equals((booking.getUser().getId()))) {
             throw new UnauthorisedException("Booking does not belong to the user with id: "+user.getId());
         }
-        return booking.getBookingStatus().name();
+        return booking.getBookingStatus();
     }
 
     @Override

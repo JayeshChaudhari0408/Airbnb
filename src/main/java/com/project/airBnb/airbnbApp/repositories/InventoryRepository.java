@@ -1,5 +1,6 @@
 package com.project.airBnb.airbnbApp.repositories;
 
+import com.project.airBnb.airbnbApp.dto.RoomPriceDto;
 import com.project.airBnb.airbnbApp.entity.Hotel;
 import com.project.airBnb.airbnbApp.entity.Inventory;
 import com.project.airBnb.airbnbApp.entity.Room;
@@ -127,6 +128,29 @@ public interface InventoryRepository extends JpaRepository<Inventory,Long> {
                        @Param("endDate") LocalDate endDate,
                        @Param("surgeFactor") BigDecimal surgeFactor,
                         @Param("closed") boolean closed);
+
+    @Query("""
+       SELECT new com.project.airBnb.airbnbApp.dto.RoomPriceDto(
+            i.room,
+            CASE
+                WHEN COUNT(i) = :dateCount THEN AVG(i.price)
+                ELSE NULL
+            END
+        )
+       FROM Inventory i
+       WHERE i.hotel.id = :hotelId
+             AND i.date BETWEEN :startDate AND :endDate
+             AND (i.totalCount - i.bookedCount) >= :roomsCount
+             AND i.closed = false
+       GROUP BY i.room
+       """)
+    List<RoomPriceDto> findRoomAveragePrice(
+            @Param("hotelId") Long hotelId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("roomsCount") Long roomsCount,
+            @Param("dateCount") Long dateCount
+    );
     @Query("""
                 SELECT i
                 FROM Inventory i
@@ -141,17 +165,5 @@ public interface InventoryRepository extends JpaRepository<Inventory,Long> {
 
     List<Inventory> findByHotelAndDateBetween(Hotel hotel, LocalDate startDate, LocalDate endDate);
 
-//    @Query("""
-//            UPDATE Inventory i
-//                SET i.roomId = :roomId,
-//                    i.basePrice = :basePrice,
-//                    i.totalCount = :totalCount
-//                WHERE i.room.id =:roomId
-//            """)
-//    Inventory updateInventoryRoom(
-//            @Param("roomId") Long roomId,
-//            @Param("basePrice") BigDecimal basePrice,
-//            @Param("totalCount") int totalCount
-//    );
     List<Inventory> findByRoomOrderByDate(Room room);
 }

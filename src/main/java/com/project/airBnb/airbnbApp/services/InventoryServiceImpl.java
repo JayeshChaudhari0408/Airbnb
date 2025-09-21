@@ -1,8 +1,5 @@
 package com.project.airBnb.airbnbApp.services;
-import com.project.airBnb.airbnbApp.dto.HotelPriceDto;
-import com.project.airBnb.airbnbApp.dto.HotelSearchRequest;
-import com.project.airBnb.airbnbApp.dto.InventoryDto;
-import com.project.airBnb.airbnbApp.dto.UpdateInventoryRequestDto;
+import com.project.airBnb.airbnbApp.dto.*;
 import com.project.airBnb.airbnbApp.entity.Inventory;
 import com.project.airBnb.airbnbApp.entity.Room;
 import com.project.airBnb.airbnbApp.entity.User;
@@ -66,11 +63,13 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public void deleteAllInventories(Room room) {
+        log.info("Deleting the inventories of room with id: {}", room.getId());
         inventoryRepository.deleteByRoom(room);
     }
 
     @Override
-    public Page<HotelPriceDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
+    public Page<HotelPriceResponseDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
+        log.info("Searching hotels for {} city, from {} to {}", hotelSearchRequest.getCity(), hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate());
         Pageable pageable = PageRequest.of(hotelSearchRequest.getPage(),hotelSearchRequest.getSize());
 
         long dateCount =
@@ -80,11 +79,16 @@ public class InventoryServiceImpl implements InventoryService{
                 hotelSearchRequest.getStartDate(),hotelSearchRequest.getEndDate(),hotelSearchRequest.getRoomsCount(),
                 dateCount,pageable);
 
-        return hotelPage;
+        return hotelPage.map(hotelPriceDto -> {
+            HotelPriceResponseDto hotelPriceResponseDto = modelMapper.map(hotelPriceDto.getHotel(), HotelPriceResponseDto.class);
+            hotelPriceResponseDto.setPrice(hotelPriceDto.getPrice());
+            return hotelPriceResponseDto;
+        });
     }
 
     @Override
     public List<InventoryDto> getAllInventoryByRoom(Long roomId) {
+        log.info("Getting All inventory by room for room with id: {}", roomId);
         Room room = roomRepository
                 .findById(roomId)
                 .orElseThrow(() ->  new ResourceNotFoundException("Room with this id is not available"));
@@ -101,6 +105,8 @@ public class InventoryServiceImpl implements InventoryService{
     @Override
     @Transactional
     public void updateInventory(Long roomId, UpdateInventoryRequestDto updateInventoryRequestDto) {
+        log.info("Updating All inventory by room for room with id: {} between date range: {} - {}", roomId,
+                updateInventoryRequestDto.getStartDate(), updateInventoryRequestDto.getEndDate());
         Room room = roomRepository
                 .findById(roomId)
                 .orElseThrow(() ->  new ResourceNotFoundException("Room with this id is not available"));

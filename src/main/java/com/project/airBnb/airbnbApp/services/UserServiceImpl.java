@@ -6,6 +6,7 @@ import com.project.airBnb.airbnbApp.entity.User;
 import com.project.airBnb.airbnbApp.exceptions.ResourceNotFoundException;
 import com.project.airBnb.airbnbApp.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import static com.project.airBnb.airbnbApp.utils.AppUtils.getCurrentUser;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -41,6 +43,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDto getMyProfile() {
+        log.info("Getting the profile for user with id: {}", getCurrentUser().getId());
         return modelMapper.map(getCurrentUser(),UserDto.class);
     }
 

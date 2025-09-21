@@ -11,7 +11,6 @@ import java.util.Set;
 @Data
 public class BookingDto {
     private Long id;
-    private Long userId;
     private Integer roomsCount;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;

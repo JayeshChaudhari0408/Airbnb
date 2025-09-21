@@ -12,7 +12,8 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public interface HotelMinPriceRepository extends JpaRepository<HotelMinPrice,Long> {
+public interface
+HotelMinPriceRepository extends JpaRepository<HotelMinPrice,Long> {
 
     @Query("""
             SELECT new com.project.airBnb.airbnbApp.dto.HotelPriceDto(i.hotel, AVG(i.price))

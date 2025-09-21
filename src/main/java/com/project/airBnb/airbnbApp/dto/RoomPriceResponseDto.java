@@ -1,16 +1,16 @@
 package com.project.airBnb.airbnbApp.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.math.BigDecimal;
+import lombok.NoArgsConstructor;
 
 @Data
-public class RoomDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class RoomPriceResponseDto {
     private Long id;
     private String type;
-    private BigDecimal basePrice;
     private String[] photos;
     private String[] amenities;
-    private Integer totalCount;
-    private Integer capacity;
+    private Double price;
 }

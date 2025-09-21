@@ -5,6 +5,7 @@ import com.project.airBnb.airbnbApp.dto.HotelDto;
 import com.project.airBnb.airbnbApp.dto.HotelReportDto;
 import com.project.airBnb.airbnbApp.services.BookingService;
 import com.project.airBnb.airbnbApp.services.HotelService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,15 @@ public class HotelController {
     private final BookingService bookingService;
 
     @PostMapping
+    @Operation(summary = "Create a new hotel", tags = {"Admin Hotel"})
     public ResponseEntity<HotelDto> createNewHotel(@RequestBody HotelDto hotelDto) {
-        log.info("Attempting to create new hotel with name: " + hotelDto.getName());
+        log.info("Attempting to create a new hotel with name: "+hotelDto.getName());
         HotelDto hotel = hotelService.createNewHotel(hotelDto);
         return new ResponseEntity<>(hotel, HttpStatus.CREATED);
     }
 
     @GetMapping("/{hotelId}")
+    @Operation(summary = "Get a hotel by Id", tags = {"Admin Hotel"})
     public ResponseEntity<HotelDto> getHotelById(@PathVariable Long hotelId) {
         log.info("Attempting to get hotel by id: "+ hotelId);
         HotelDto hotel = hotelService.getHotelById(hotelId);
@@ -38,34 +41,40 @@ public class HotelController {
     }
 
     @PutMapping("/{hotelId}")
+    @Operation(summary = "Update a hotel", tags = {"Admin Hotel"})
     public ResponseEntity<HotelDto> updateHotelById(@PathVariable Long hotelId,@RequestBody HotelDto hotelDto) {
         HotelDto hotel = hotelService.updateHotelById(hotelId,hotelDto);
         return ResponseEntity.ok(hotel);
     }
 
     @DeleteMapping("/{hotelId}")
+    @Operation(summary = "Delete a hotel", tags = {"Admin Hotel"})
     public ResponseEntity<Void> deleteHotelById(@PathVariable Long hotelId) {
         hotelService.deleteHotelById(hotelId);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{hotelId}")
+    @Operation(summary = "Activate a hotel", tags = {"Admin Hotel"})
     public ResponseEntity<Void> activateHotel(@PathVariable Long hotelId) {
         hotelService.activateHotel(hotelId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
+    @Operation(summary = "Get all hotels owned by admin", tags = {"Admin Hotel"})
     public ResponseEntity<List<HotelDto>> getAllHotels() {
         return ResponseEntity.ok(hotelService.getAllHotel());
     }
 
     @GetMapping("/{hotelId}/bookings")
+    @Operation(summary = "Get all bookings of a hotel", tags = {"Admin Bookings"})
     public ResponseEntity<List<BookingDto>> getAllBookingsByHotelId(@PathVariable Long hotelId) {
         return ResponseEntity.ok(bookingService.getAllBookingsByHotelId(hotelId));
     }
 
     @GetMapping("/{hotelId}/reports")
+    @Operation(summary = "Generate a bookings report of a hotel", tags = {"Admin Bookings"})
     public ResponseEntity<HotelReportDto> getHotelReport(@PathVariable Long hotelId,
                                                          @RequestParam(required = false) LocalDate startDate,
                                                          @RequestParam(required = false) LocalDate endDate) {

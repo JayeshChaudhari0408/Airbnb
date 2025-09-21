@@ -4,6 +4,7 @@ import com.project.airBnb.airbnbApp.dto.BookingDto;
 import com.project.airBnb.airbnbApp.dto.BookingRequestDto;
 import com.project.airBnb.airbnbApp.dto.GuestDto;
 import com.project.airBnb.airbnbApp.dto.HotelReportDto;
+import com.project.airBnb.airbnbApp.entity.enums.BookingStatus;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 
@@ -22,7 +23,7 @@ public interface BookingService {
 
     void cancelBooking(Long bookingId);
 
-    String getBookingStatus(Long bookingId);
+    BookingStatus getBookingStatus(Long bookingId);
 
     List<BookingDto> getAllBookingsByHotelId(Long hotelId);
 

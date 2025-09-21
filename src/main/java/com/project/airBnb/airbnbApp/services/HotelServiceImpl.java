@@ -1,14 +1,13 @@
 package com.project.airBnb.airbnbApp.services;
 
-import com.project.airBnb.airbnbApp.dto.HotelDto;
-import com.project.airBnb.airbnbApp.dto.HotelInfoDto;
-import com.project.airBnb.airbnbApp.dto.RoomDto;
+import com.project.airBnb.airbnbApp.dto.*;
 import com.project.airBnb.airbnbApp.entity.Hotel;
 import com.project.airBnb.airbnbApp.entity.Room;
 import com.project.airBnb.airbnbApp.entity.User;
 import com.project.airBnb.airbnbApp.exceptions.ResourceNotFoundException;
 import com.project.airBnb.airbnbApp.exceptions.UnauthorisedException;
 import com.project.airBnb.airbnbApp.repositories.HotelRepository;
+import com.project.airBnb.airbnbApp.repositories.InventoryRepository;
 import com.project.airBnb.airbnbApp.repositories.RoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,7 @@ public class HotelServiceImpl implements HotelService{
     private final ModelMapper modelMapper;
     private final InventoryService inventoryService;
     private final RoomRepository roomRepository;
+    private final InventoryRepository inventoryRepository;
     @Override
     public HotelDto createNewHotel(HotelDto hotelDto) {
         log.info("Creating a new hotel with name: {}", hotelDto.getName());

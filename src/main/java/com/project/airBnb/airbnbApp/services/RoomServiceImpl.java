@@ -30,6 +30,7 @@ public class RoomServiceImpl implements RoomService{
     @Override
     @Transactional
     public RoomDto createNewRoom(Long hotelId,RoomDto roomDto) {
+        log.info("Creating a new room in hotel with ID: {}", hotelId);
         Room room = modelMapper.map(roomDto,Room.class);
         Hotel hotel = hotelRepository
                 .findById(hotelId)
@@ -49,6 +50,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public List<RoomDto> getAllRoomsInHotel(Long hotelId) {
+        log.info("Getting all rooms in hotel with ID: {}", hotelId);
         Hotel hotel = hotelRepository
                 .findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with id "+hotelId));
@@ -65,6 +67,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public RoomDto getRoomById(Long roomId) {
+        log.info("Getting the room with ID: {}", roomId);
         Room room = roomRepository
                 .findById(roomId)
                 .orElseThrow(() ->  new ResourceNotFoundException("Room with this id is not available"));
@@ -74,6 +77,7 @@ public class RoomServiceImpl implements RoomService{
     @Override
     @Transactional
     public void deleteRoomById(Long roomId) {
+        log.info("Deleting the room with ID: {}", roomId);
         Room room = roomRepository
                 .findById(roomId)
                 .orElseThrow(() ->  new ResourceNotFoundException("Room with this id is not available"));
@@ -83,12 +87,13 @@ public class RoomServiceImpl implements RoomService{
         }
 
         inventoryService.deleteAllInventories(room);
-
         roomRepository.deleteById(roomId);
     }
 
     @Override
+    @Transactional
     public RoomDto updateRoomById(Long hotelId, Long roomId, RoomDto roomDto) {
+        log.info("Updating the room with ID: {}", roomId);
         Hotel hotel = hotelRepository
                 .findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with id "+hotelId));
