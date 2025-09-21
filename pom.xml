@@ -11,8 +11,8 @@
 	<groupId>com.project.airBnb</groupId>
 	<artifactId>airbnbApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>airbnbApp</name>
-	<description>Airbnb App in Spring Boot</description>
+	<name>bookInnApp</name>
+	<description>BookInn App in Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
