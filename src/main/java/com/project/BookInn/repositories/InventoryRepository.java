@@ -130,7 +130,7 @@ public interface InventoryRepository extends JpaRepository<Inventory,Long> {
                         @Param("closed") boolean closed);
 
     @Query("""
-       SELECT new com.project.airBnb.airbnbApp.dto.RoomPriceDto(
+       SELECT new com.project.BookInn.dto.RoomPriceDto(
             i.room,
             CASE
                 WHEN COUNT(i) = :dateCount THEN AVG(i.price)
