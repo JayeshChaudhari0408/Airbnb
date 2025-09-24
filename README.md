@@ -1,6 +1,6 @@
 # BookInn (Backend) 🏨
 
-[![Java](https://img.shields.io/badge/Java-18-blue)](https://www.oracle.com/java/)
+[![Java](https://img.shields.io/badge/Java-21-blue)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-green)](https://spring.io/projects/spring-boot)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)](https://www.postgresql.org/)
 [![Build](https://img.shields.io/badge/Build-Maven-red)](https://maven.apache.org/)
